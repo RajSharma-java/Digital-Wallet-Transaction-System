@@ -1,6 +1,7 @@
 package com.common_service.exceptions.globalException;
 
 import com.common_service.exceptions.customeException.ResourceAlreadyExistsException;
+import com.common_service.exceptions.customeException.ResourceNotFoundException;
 import com.common_service.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalException {
@@ -36,22 +42,39 @@ public class GlobalException {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
-    // Validation errors (like @Valid)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidationErrors(MethodArgumentNotValidException ex,
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleResourceNotFound(ResourceNotFoundException ex,
                                                                       WebRequest request) {
-        String errorMessage = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                .findFirst()
-                .orElse(ex.getMessage());
-
         ApiResponse<Object> response = ApiResponse.error(
-                HttpStatus.BAD_REQUEST.value(),
-                errorMessage,
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
                 request.getDescription(false)
         );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+
+
+    // Handle JPA / entity validation errors
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleConstraintViolation(ConstraintViolationException ex,
+                                                                         WebRequest request) {
+
+        // Collect all violations as field -> message
+        Map<String, String> errors = ex.getConstraintViolations()
+                .stream()
+                .collect(Collectors.toMap(
+                        v -> v.getPropertyPath().toString(), // field name
+                        v -> v.getMessage()
+                ));
+
+        ApiResponse<Object> response = ApiResponse.error(
+                400,
+                "Validation failed",
+                errors,
+                request.getDescription(false)
+        );
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

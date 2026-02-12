@@ -22,5 +22,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.isDeleted = false")
     Page<User> getActiveUsers(Pageable pageable);
 //    Page<User> findByIsDeletedFalse(Pageable pageable);
+
+    Optional<User> findByPhone(Long phone);
+    Optional<User> findByEmail(String email);
 }
 

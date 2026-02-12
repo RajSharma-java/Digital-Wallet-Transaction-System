@@ -1,6 +1,7 @@
 package com.digital.service.impl;
 
 import com.common_service.exceptions.customeException.ResourceAlreadyExistsException;
+import com.common_service.exceptions.customeException.ResourceNotFoundException;
 import com.common_service.response.PagedResponse;
 import com.digital.conifg.UserMapper;
 import com.digital.dtos.UserDto;
@@ -31,10 +32,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto dto) {
 
-        Optional<User> user = userRepo.findByEmailAndPhone(dto.getEmail(), dto.getPhone());
-        if (user.isPresent()) {
-            throw new ResourceAlreadyExistsException("Email and phone already present!!");
+        Optional<User> phone = userRepo.findByPhone(dto.getPhone());
+        if(phone.isPresent()){
+            throw  new ResourceAlreadyExistsException("Phone number exists, try other number");
         }
+        Optional<User> email = userRepo.findByEmail(dto.getEmail());
+        if(email.isPresent()) throw new ResourceAlreadyExistsException("Email Already exists, try other email id;");
         User users = userMapper.toEntity(dto);
         User savedUser = userRepo.save(users);
         return userMapper.toDto(savedUser);
@@ -60,7 +63,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-
+        User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setDeleted(true);
+        userRepo.save(user);
     }
 
     @Override
