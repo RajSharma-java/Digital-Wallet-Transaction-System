@@ -16,9 +16,9 @@
 
     <!-- Project Info -->
     <groupId>com.digital</groupId>
-    <artifactId>user-service</artifactId>
+    <artifactId>userProfile-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user-service</name>
+    <name>userProfile-service</name>
     <description>User service of digi microservices project</description>
 
     <properties>

@@ -2,8 +2,8 @@ package com.digital.controller;
 
 import com.common_service.response.ApiResponse;
 import com.common_service.response.PagedResponse;
-import com.digital.dtos.UserDto;
-import com.digital.service.UserService;
+import com.digital.dtos.UserProfileDto;
+import com.digital.service.UserProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -11,19 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/users")
-public class UserController {
+@RequestMapping("api/usersProfile")
+public class UserProfileController {
 
-    private final UserService userService;
+    private final UserProfileService userProfileService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserProfileController(UserProfileService userProfileService) {
+        this.userProfileService = userProfileService;
     }
 
     // create
     @PostMapping("create")
-    public ResponseEntity<ApiResponse<UserDto>> createUser(@Valid @RequestBody UserDto dto, HttpServletRequest request) {
-        UserDto savedUser = userService.createUser(dto);
+    public ResponseEntity<ApiResponse<UserProfileDto>> createUser(@Valid @RequestBody UserProfileDto dto, HttpServletRequest request) {
+        UserProfileDto savedUser = userProfileService.createUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(
                         201,
@@ -33,15 +33,15 @@ public class UserController {
                 ));
     }
     @GetMapping("/allUser")
-    public ResponseEntity<PagedResponse<UserDto>> getAllUserWithPagination(
+    public ResponseEntity<PagedResponse<UserProfileDto>> getAllUserWithPagination(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir,
             HttpServletRequest request) {
 
-        PagedResponse<UserDto> allUsers =
-                userService.getAll(pageNumber, pageSize, sortBy, sortDir);
+        PagedResponse<UserProfileDto> allUsers =
+                userProfileService.getAll(pageNumber, pageSize, sortBy, sortDir);
 
         return ResponseEntity.ok(allUsers);
     }
@@ -50,7 +50,7 @@ public class UserController {
     // here we will delete the soft user
     @PutMapping("/deleteUser/soft-delete/{id}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id, HttpServletRequest request){
-        userService.delete(id);
+        userProfileService.delete(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(200,
                         "User Deleted successfully",

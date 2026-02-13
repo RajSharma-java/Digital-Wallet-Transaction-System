@@ -1,9 +1,8 @@
-package com.digital.model;
+package com.digital.dto;
 
+import com.digital.enums.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,45 +13,33 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Where(clause = "is_deleted = false")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserDto {
     private Long id;
 
-
-    @NotBlank(message = "Email name should be required!!")
-    private String fullName;
 
     @Pattern(
             regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$",
             message = "Invalid email format"
     )
-    @Column(unique = true)
-    @NotBlank(message = "Email should be required")
+    @NotBlank(message = "Email should be required!!")
     private String email;
 
+    @NotBlank(message = "Password should be required!!")
+    private String password;
 
-    @Column(unique = true)
-    @NotNull(message = "phone number is required!!")
-    private Long phone;
+    private Role role;
 
-    private String referralCode;
-
-    private String referredBy;
-
-    private  boolean status= true;
-
-    private boolean isDeleted=false;
+    private boolean isActive= true;
+    private boolean isDeleted= false;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
+

@@ -1,13 +1,13 @@
 package com.digital.conifg;
 
-import com.digital.dtos.UserDto;
-import com.digital.model.User;
+import com.digital.dtos.UserProfileDto;
+import com.digital.model.UserProfile;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserDto toDto(User user);
+    UserProfileDto toDto(UserProfile userProfile);
 
-    User toEntity(UserDto dto);
+    UserProfile toEntity(UserProfileDto dto);
 }
