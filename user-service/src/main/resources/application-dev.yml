@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: digital-wallet-service
+    name: user-profile-service
 
   datasource:
     url: jdbc:mysql://localhost:3306/digital_wallet_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC

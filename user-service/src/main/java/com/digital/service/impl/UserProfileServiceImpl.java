@@ -3,6 +3,7 @@ package com.digital.service.impl;
 import com.common_service.exceptions.customeException.ResourceAlreadyExistsException;
 import com.common_service.exceptions.customeException.ResourceNotFoundException;
 import com.common_service.response.PagedResponse;
+import com.digital.Helper.ReferralCodeGenerator;
 import com.digital.conifg.UserMapper;
 import com.digital.dtos.UserProfileDto;
 import com.digital.model.UserProfile;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
@@ -34,6 +36,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         Optional<UserProfile> email = userRepo.findByEmail(dto.getEmail());
         if(email.isPresent()) throw new ResourceAlreadyExistsException("Email Already exists, try other email id;");
         UserProfile users = userMapper.toEntity(dto);
+        users.setReferralCode(ReferralCodeGenerator.generateReferralCode());
         UserProfile savedUserProfile = userRepo.save(users);
         return userMapper.toDto(savedUserProfile);
     }

@@ -6,6 +6,7 @@ import com.digital.dto.UserDto;
 import com.digital.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class UserController {
     
     public  final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(@Lazy  UserService userService) {
         this.userService = userService;
     }
 

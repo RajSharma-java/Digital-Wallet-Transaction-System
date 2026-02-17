@@ -20,15 +20,13 @@ public class UserDto {
     private Long id;
 
 
-    @Pattern(
-            regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$",
-            message = "Invalid email format"
-    )
     @NotBlank(message = "Email should be required!!")
     private String email;
 
     @NotBlank(message = "Password should be required!!")
     private String password;
+
+    private String fullName;
 
     private Role role;
 
